@@ -1,0 +1,86 @@
+---
+
+- name: bootstrap
+  hosts: all
+  become: yes
+  strategy: linear
+  tasks:
+    - block:
+      - name: add ansible group
+        group:
+          name: ansible
+          system: yes
+      
+      - name: add ansible user
+        user:
+          name: ansible
+          system: yes
+          group: ansible
+          shell: "/bin/bash"
+          home: "{{ user.ansible.home }}"
+          groups: ssh,sudo
+
+      - name: create home dir
+        file:
+          path: "{{ user.ansible.home }}"
+          state: directory
+          owner: ansible
+          group: ansible
+          mode: "0750"
+
+      - name: add ssh key
+        authorized_key:
+          user: ansible
+          key: "{{ user.ansible.ssh_pub_key }}"
+
+  
+      - name: remove cdrom from source list
+        lineinfile:
+          dest: "/etc/apt/sources.list"
+          regexp: '^deb cdrom:'
+          state: absent
+
+      - block:
+        - name: Install Sudo
+          apt:
+            name: sudo
+
+      - name: Add sudo permision for ansible
+          lineinfile:
+            dest: "/etc/sudoers"
+            regexp: '^[\s]*ansible\b'
+            line: "ansible ALL=(ALL) NOPASSWD:ALL"
+
+      - name: uprava sshd configu 1
+          lineinfile:
+            dest: "/etc/ssh/sshd_config"
+            regexp: '^[\s]*{{ item.regexp }}\b'
+            line: "{{ item.line }}"
+            state: "{{ item.state }}"
+        notify: restart ssh
+        with_items:
+            - { regexp: "AllowUsers", line: "AllowUsers ansible", state: present }
+
+      - name: read sshd config
+          shell: "cat /etc/ssh/sshd_config"
+        register: sshd_config
+        check_mode: no 
+        
+        #- name: uprava sshd configu 2
+         # lineinfile:
+          #  dest: "/etc/ssh/sshd_config"
+           # regexp: '^[\s]*{{ item.regexp }}\b'
+            #line: "{{ item.line }}"
+            #state: "{{ item.state }}"
+         # notify: restart ssh
+         # with_items:
+          #  - { regexp: "AllowGroups", line: "AllowGroups ssh admins_vfx", state: present }
+          #when: sshd_config.stdout.find('AllowGroups ssh admins_vfx') == -1
+
+  handlers:
+    - name: restart ssh
+      service:
+        name: ssh
+        state: restarted
+
+...

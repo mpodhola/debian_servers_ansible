@@ -1,0 +1,8 @@
+install_crowdsec:
+  - crowdsec
+  - crowdsec-firewall-bouncer-nftables
+
+crowsed_services:
+  - nftables.service
+  - crowdsec-firewall-bouncer.service
+  - crowdsec.service

@@ -1,0 +1,9 @@
+---
+
+- name: setup_firewall_nftables
+  template: 
+    src: nftables.conf.j2
+    dest: '/etc/nftables.conf' 
+  notify: restart_nftables
+
+...

@@ -1,0 +1,72 @@
+---
+
+- name: Check existing Nuke
+  stat:
+    path: /usr/local/{{ nuke.nuke_name+nuke.version+nuke.revision }}
+  register: nuke_check
+
+- name: Install Nuke
+  block:
+  - name: Mount vfxsoft
+    mount:
+      src: vfxrepo:/vfxsoft
+      path: /mnt/vfxsoft
+      fstype: nfs
+      opts: ro
+      fstab: /tmp/tmp.fstab
+      state: mounted
+
+  - name: Nuke instalation
+    shell: '/mnt/vfxsoft/Nuke_inst/{{ nuke.nuke_name+nuke.version+nuke.revision }}/{{ nuke.nuke_installer if nuke.nuke_installer is defined else nuke.nuke_name+"-"+nuke.version+nuke.revision+default_nuke_installer }} --prefix=/usr/local --accept-foundry-eula'
+
+  - name: Unmount an vfsxsoft
+    mount:
+      path: /mnt/vfxsoft
+      fstab: /tmp/tmp.fstab
+      state: unmounted
+  when: not ansible_check_mode and nuke_check.stat.exists == false
+
+- name: Ensure Nuke "icence directory exists"
+  file:
+    path: "{{ item.path }}"
+    state: directory
+  with_items:
+    - "{{ copy_nuke_files }}"
+
+- name: Copy nuke files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    - "{{ copy_nuke_files }}"
+
+#- name: Ensure directory for profile env exists
+#  file:
+#    path: "/etc/skel/.config/plasma-workspace/env"
+#    state: directory
+
+#- name: Deploy profiles
+#  template:
+#    src: 'vfx_profile_sh.j2'
+#    dest: '/etc/skel/.config/plasma-workspace/env/vfx_profile.sh'
+#    mode: '755'
+
+- name: Deploy profiles
+  template:
+    src: 'vfx_profile.j2'
+    dest: '/etc/environment.d/90upp.conf'
+    mode: '755'
+
+- name: Create symbolic links
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  with_items:
+    - "{{ symlinks }}"
+
+- include_role:
+    name: launchers
+
+...

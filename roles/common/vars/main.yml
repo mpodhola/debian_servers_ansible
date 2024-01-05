@@ -1,0 +1,113 @@
+---
+
+add_repository:
+  - name: "crowdsec"
+    description: "crowdsec repository"
+    url: "https://packagecloud.io/crowdsec/crowdsec/debian/ bullseye main"
+    key_path: "/usr/share/keyrings/crowdsec_crowdsec-archive-keyring.gpg"
+
+  - name: "zabbix"
+    description: "zabbix repository"
+    url: "https://repo.zabbix.com/zabbix/6.0/debian bullseye main"
+    
+  - name: "zabbix agent plugins"
+    description: "zabbix agent plugin repository"
+    url: "https://repo.zabbix.com/zabbix-agent2-plugins/1/debian bullseye main"
+    
+
+
+# basic packages
+install_packages:
+  - make
+  - zsh
+  - gcc
+  - nmap
+  - net-tools
+  - cifs-utils
+  - nfs-common
+  - vim
+  - ntpdate
+  - htop
+  - iftop
+  - linux-headers-{{ ansible_kernel }}
+  - python3
+  - samba
+  - ncdu
+  - pip
+  - curl
+  - tmux
+  - screen
+  - git
+  - nftables
+  - debian-archive-keyring
+  - gnupg
+  - apt-transport-https
+
+
+clerc:
+ - url: http://git.io/clerc
+   dest: ~/
+   mode: 077
+   
+
+
+
+
+# not required packages
+#purge_packages:
+ # - gnome-games
+ # - aisleriot
+ # - gnome-mahjongg
+ # - gnome-mines
+ # - gnome-sudoku 
+ # - rhythmbox
+ # - transmission-common
+
+masked_services:
+  - name: sleep.target
+  
+  - name: suspend.target
+  
+  - name: hibernate.target
+  
+  - name: ybrid-sleep.target
+
+
+# files for VNC configuration
+#copy_vnc_files:
+ # - src: 'vfx.vnc.service'
+  #  dest: '/lib/systemd/system/vfx.vnc.service'
+  #  mode: '755'
+
+  #- src: 'vfx.vnc.pass'
+  #  dest: '/etc/vfx.vnc.pass'
+  #  mode: '755'
+
+# files for domain configuration
+#copy_sssd_files:
+#  - src: 'sssd.conf'
+#    dest: '/etc/sssd/sssd.conf'
+#    mode: '600'
+
+#  - src: 'krb5.conf'
+#    dest: '/etc/krb5.conf'
+#    mode: '644'
+
+copy_files:
+  - src: bashrc
+    dest: "/root/.bashrc"
+    mode: "600"
+
+copy_nft:
+  - src: nftables.conf
+    dest: /etc/nftables.conf
+    mode: "764"
+
+
+# basic launchers
+
+# basic mount points
+ip_segments: '192.168.0.0/16'
+tcp_ports_not_local: 'http, https'
+tcp_ports_local: 'http, https, ssh, '
+...

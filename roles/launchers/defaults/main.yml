@@ -1,0 +1,7 @@
+---
+
+launcher_term: "false"
+launcher_type: "Application"
+icon_path_default: "/opt/icons/"
+
+...

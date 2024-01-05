@@ -1,0 +1,12 @@
+---
+
+vb:
+  version: "virtualbox-6.1"
+  repo: "deb https://download.virtualbox.org/virtualbox/debian bullseye contrib"
+
+virtualbox:
+  - url: "https://www.virtualbox.org/download/oracle_vbox_2016.asc"
+
+  - url: "https://www.virtualbox.org/download/oracle_vbox.asc"
+
+...

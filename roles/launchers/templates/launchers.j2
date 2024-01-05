@@ -1,0 +1,16 @@
+[Desktop Entry]
+Name={{ launchname }}
+Comment="{{ comment }}"
+Exec={{ execut }}
+{% if icon_name -%}
+Icon={{ icon_path + icon_name }}
+{% endif -%}
+Terminal={{ term }}
+{% if minetype -%}
+MimeType={{ minetype }}
+{% endif -%}
+Type={{ type | default("Application") }}
+{% if autostart -%}
+X-GNOME-Autostart-enabled=true
+{% endif -%}
+Categories={{ categories }}

@@ -1,0 +1,70 @@
+---
+
+nuke:
+  nuke_name: "Nuke"
+  revision: "v4"
+  version: "13.0"
+  path: "production_core"
+
+copy_nuke_files:
+  - src: 'foundry_serlic5.lic'
+    dest: '/usr/local/foundry/RLM/foundry_serlic5.lic'
+    path: '/usr/local/foundry/RLM/'
+    mode: '755'
+
+  - src: 'foundry_serlic7.lic'
+    dest: '/usr/local/foundry/RLM/foundry_serlic7.lic'
+    path: '/usr/local/foundry/RLM/'
+    mode: '755'
+
+symlinks:
+  - src: "/usr/lib/x86_64-linux-gnu/libffi.so.7"
+    dest: "/usr/lib/x86_64-linux-gnu/libffi.so.6"
+
+launcher_vars:
+  - launchname: "{{ nuke.nuke_name+nuke.version+nuke.revision }}"
+    comment: ""
+    exec: "/usr/local/{{ nuke.nuke_name+nuke.version+nuke.revision }}/{{ nuke.nuke_name+nuke.version }} -b %f"
+    icon_name: "NukeApp48.png"
+    icon_path: "/usr/local/{{ nuke.nuke_name+nuke.version+nuke.revision }}/plugins/icons/"
+    icon_copy: false
+    minetype: "application/x-nuke;"
+    categories: "Graphics;2DGraphics;RasterGraphics;FLTK;"
+
+  - launchname: "{{ nuke.nuke_name }}X{{ nuke.version+nuke.revision }}"
+    comment: ""
+    exec: "/usr/local/{{ nuke.nuke_name+nuke.version+nuke.revision }}/{{ nuke.nuke_name+nuke.version }} -b --nukex %f"
+    icon_name: "NukeXApp48.png"
+    icon_path: "/usr/local/{{ nuke.nuke_name+nuke.version+nuke.revision }}/plugins/icons/"
+    icon_copy: false
+    minetype: "application/x-nuke;"
+    categories: "Graphics;2DGraphics;RasterGraphics;FLTK;"
+
+  - launchname: "{{ nuke.nuke_name }}Assist{{ nuke.version+nuke.revision }}"
+    comment: ""
+    exec: "/usr/local/{{ nuke.nuke_name+nuke.version+nuke.revision }}/{{ nuke.nuke_name+nuke.version }} -b --nukeassist %f"
+    icon_name: "NukeApp48.png"
+    icon_path: "/usr/local/{{ nuke.nuke_name+nuke.version+nuke.revision }}/plugins/icons/"
+    icon_copy: false
+    minetype: "application/x-nuke;"
+    categories: "Graphics;2DGraphics;RasterGraphics;FLTK;"
+
+  - launchname: "{{ nuke.nuke_name }}Studio{{ nuke.version+nuke.revision }}"
+    comment: ""
+    exec: "/usr/local/{{ nuke.nuke_name+nuke.version+nuke.revision }}/{{ nuke.nuke_name+nuke.version }} -b --studio %f"
+    icon_name: "NukeStudioApp48.png"
+    icon_path: "/usr/local/{{ nuke.nuke_name+nuke.version+nuke.revision }}/plugins/icons/"
+    icon_copy: false
+    minetype: "application/x-nuke;"
+    categories: "Graphics;2DGraphics;RasterGraphics;FLTK;"
+
+  - launchname: "HieroPlayer{{ nuke.version+nuke.revision }}"
+    comment: ""
+    exec: "/usr/local/{{ nuke.nuke_name+nuke.version+nuke.revision }}/{{ nuke.nuke_name+nuke.version }} --player %f"
+    icon_name: "HieroApp64.png"
+    icon_path: "/usr/local/{{ nuke.nuke_name+nuke.version+nuke.revision }}/plugins/icons/"
+    icon_copy: false
+    minetype: "application/x-nuke;"
+    categories: "Graphics;2DGraphics;RasterGraphics;FLTK;"
+
+...

@@ -1,0 +1,35 @@
+---
+
+- name: konfiguration clean work station
+  hosts: all:!uncommon
+  become: yes
+  roles: 
+    - common
+  tags:
+    - common
+
+- name: nuke
+  hosts: all:!uncommon
+  become: yes
+  roles: 
+    - nuke
+  tags:
+    - nuke
+
+- name: instantteam
+  hosts: all:!uncommon
+  become: yes
+  roles: 
+    - instantteam
+  tags:
+    - instantteam
+
+- name: virtualbox
+  hosts: virtuals
+  become: yes
+  roles: 
+    - virtualbox
+  tags:
+    - virtualbox
+
+...

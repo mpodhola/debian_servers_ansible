@@ -1,0 +1,36 @@
+---
+
+- name: check exist instantteam app
+  stat:
+    path: /opt/Instant_team
+  register: instantteam_check
+
+- name: Install instant team
+  block:  
+  - name: Mount vfxsoft
+    mount:
+      src: vfxrepo:/vfxsoft
+      path: /mnt/vfxsoft
+      fstype: nfs
+      opts: ro
+      fstab: /tmp/tmp.fstab
+      state: mounted
+
+  - name: Copy instant team app
+    copy:
+      src: /mnt/vfxsoft/Instant_team
+      dest: /opt/
+      remote_src: yes 
+      directory_mode: yes
+
+  - name: Unmount an vfsxsoft
+    mount:
+      path: /mnt/vfxsoft
+      fstab: /tmp/tmp.fstab
+      state: unmounted
+  when: not ansible_check_mode and instantteam_check.stat.exists == false
+
+- include_role:
+    name: launchers
+
+...

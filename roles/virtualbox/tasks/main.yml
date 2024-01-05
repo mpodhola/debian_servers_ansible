@@ -1,0 +1,21 @@
+---
+
+- name: add virtualbox apt-key
+  apt_key: 
+    url:  "{{ item.url }}"
+    state: present
+  with_items:
+    - "{{ virtualbox }}"
+  when: not ansible_check_mode
+
+- name: add virtualbox repository
+  apt_repository:
+    repo: "{{ vb.repo }}"
+    state: present
+
+- name: Install virtualbox 6.1
+  apt:
+    name: "{{ vb.version}}"
+    state: present
+
+...

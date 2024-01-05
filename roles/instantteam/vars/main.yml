@@ -1,0 +1,16 @@
+---
+
+instant_team:
+  version: Instant_Team_6-x86_64
+
+launcher_vars:
+  - launchname: "{{ instant_team.version }}"
+    comment: "Time logging tool"
+    exec: "/opt/Instant_team/{{ instant_team.version }}.AppImage"
+    icon_path: "/upp/upptools/sg_workgroups/linux/icons/"
+    icon_name: "instantteam.ico"
+    icon_copy: false
+    minetype: "application/x-instantteam-rl;"
+    categories: "Qt;Office;ProjectManagement;"
+
+...

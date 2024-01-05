@@ -1,0 +1,5 @@
+---
+
+default_nuke_installer: "-linux-x86_64-installer.run"
+
+...

@@ -1,0 +1,10 @@
+---
+
+ansible_ssh_private_key_file: /home/martin.podhola/.ssh/ansible/ansible_ecdsa
+
+user:
+  ansible:
+    home: "/var/lib/ansible"
+    ssh_pub_key: "{{ lookup('file', '.ssh/ansible_ecdsa.pub')}}"
+
+...

@@ -1,0 +1,8 @@
+---
+
+- name: restart_nftables
+  service:
+    name: nftables.service
+    state: restarted
+
+...

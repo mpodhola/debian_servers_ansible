@@ -1,0 +1,20 @@
+---
+
+- name: Install_crowdsec_packages
+  dnf:
+    name: "{{ install_crowdsec }}"
+    state: present
+  
+- name: Crowdsec replace firwall-bouncer
+  lineinfile:
+    dest: "/etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml"
+    regexp: '^[\s]*{{ item.line }}\b'
+    line: "{{ item.line }}"
+    state: "{{ item.state }}"
+  notify: restart_crowdsec_fw_bouncer, 
+  with_items:
+    - { regexp: "set-only: false", line: "set-only: true", state: present }
+    - { regexp: "table: crowdsec", line: "table: filter_ipv4", state: present }
+    - { regexp: "chain: crowdsec-chain", line: "chain: input_v4", state: present } 
+    - { regexp: "table: crowdsec6", line: "table: filter_ipv6", state: present } 
+ 

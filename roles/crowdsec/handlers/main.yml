@@ -1,0 +1,7 @@
+---
+- name: restart_crowdsec
+  service:
+    name: {{ crowsed_services }}
+    state: restarted
+
+...

@@ -1,0 +1,5 @@
+---
+white_list_local_ips: 192.168.0.0/16, 172.16.0.0/24
+white_list_public_ips: 89.233.144.101
+
+...

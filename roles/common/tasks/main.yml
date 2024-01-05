@@ -1,0 +1,96 @@
+--- 
+
+- name: Update apt cache
+  ansible.bultin.script:
+    update_cache: yes
+    cache_valid_time: 86400 
+  when: not ansible_check_mode
+
+- name: add repositories
+  deb_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    baseurl: "{{ item.url }}"
+    gpgcheck: "{{ item.gpgcheck | default(false) }}"
+    state: present
+  with_items:
+    "{{ add_repository }}"
+
+
+- name: Install common packages
+  apt:
+    name: "{{ install_packages }}"
+    state: present
+
+- name: uninstall packages
+  apt:
+    name: "{{ purge_packages }}"
+    state: absent
+  register: apt_purge
+
+- name: Remove dependencies that are no longer required
+  apt:
+    autoremove: yes
+  when: apt_purge.changed
+
+  
+- name: Copy default files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    "{{ copy_files }}"
+
+- name: change timezone to czech
+  timezone:
+    name: Europe/Prague
+
+- name: mask services
+  systemd:
+    name: "{{ item.name }}"
+    masked: yes
+  with_items:
+    "{{ masked_services }}"
+
+- name: ensure certificate folder exist for shotgun
+  file:
+    path: "/etc/pki/tls/certs"
+    state: directory
+
+- name: make symlink ca-bundle.crt
+  file:
+    src: /etc/ssl/certs/ca-certificates.crt
+    dest: /etc/pki/tls/certs/ca-bundle.crt
+    state: link
+
+
+- name: clerc
+  ansible.builtin.get_url:
+    url: "{{ item.url}}"
+    mode: "{{ item.mode }}"
+    dest: "{{ item.dest }}"
+    with_items:
+      "{{ clerc }}" 
+  ansible.bultin.script:
+   cmd: . clerc && cle-deploy | yes
+
+- name: clerc_root
+  ansible.builtin.get_url:
+    url: "{{ item.url}}"
+    mode: "{{ item.mode }}"
+    dest: "{{ item.dest }}"
+    with_items:
+      "{{ clerc }}" 
+    become: yes
+    become_user: root
+    become_method: "su"
+  ansible.bultin.script:
+   cmd: . clerc && cle-deploy | yes  
+
+- include_role:
+    name: nftables
+
+
+
+...
